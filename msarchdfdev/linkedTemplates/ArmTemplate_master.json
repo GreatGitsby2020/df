@@ -1,0 +1,77 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "msarchdfdev"
+		},
+		"AzureTableStorage1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
+		},
+		"SalesforceEbourlon_password": {
+			"type": "secureString",
+			"metadata": "Secure string for 'password' of 'SalesforceEbourlon'"
+		},
+		"SalesforceEbourlon_securityToken": {
+			"type": "secureString",
+			"metadata": "Secure string for 'securityToken' of 'SalesforceEbourlon'"
+		},
+		"SalesforceEbourlon_properties_typeProperties_environmentUrl": {
+			"type": "string",
+			"defaultValue": "https://login.salesforce.com"
+		},
+		"SalesforceEbourlon_properties_typeProperties_username": {
+			"type": "string",
+			"defaultValue": "postman@test.engie.com"
+		},
+		"containerUri": {
+			"type": "string",
+			"metadata": "URI to storage account containing linked ARM templates"
+		},
+		"containerSasToken": {
+			"type": "string",
+			"metadata": "Sas token to storage account containing linked ARM templates"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "ArmTemplate_0",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_0.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					},
+					"AzureTableStorage1_connectionString": {
+						"value": "[parameters('AzureTableStorage1_connectionString')]"
+					},
+					"SalesforceEbourlon_password": {
+						"value": "[parameters('SalesforceEbourlon_password')]"
+					},
+					"SalesforceEbourlon_securityToken": {
+						"value": "[parameters('SalesforceEbourlon_securityToken')]"
+					},
+					"SalesforceEbourlon_properties_typeProperties_environmentUrl": {
+						"value": "[parameters('SalesforceEbourlon_properties_typeProperties_environmentUrl')]"
+					},
+					"SalesforceEbourlon_properties_typeProperties_username": {
+						"value": "[parameters('SalesforceEbourlon_properties_typeProperties_username')]"
+					}
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
