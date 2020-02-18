@@ -1,0 +1,52 @@
+{
+	"name": "Input1",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageDf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "input1.txt",
+				"container": "dfinput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ContactId",
+				"type": "String"
+			},
+			{
+				"name": " FirstName",
+				"type": "String"
+			},
+			{
+				"name": " LastName",
+				"type": "String"
+			},
+			{
+				"name": " CompanyName",
+				"type": "String"
+			},
+			{
+				"name": " CompanyId",
+				"type": "String"
+			},
+			{
+				"name": " MobilePhone",
+				"type": "String"
+			},
+			{
+				"name": " BusinessPhone",
+				"type": "String"
+			}
+		]
+	}
+}
