@@ -51,7 +51,7 @@
 							"type": "AzureBlobStorageReadSettings",
 							"recursive": false,
 							"wildcardFolderPath": "Account*",
-							"wildcardFileName": "*",
+							"wildcardFileName": "account*.csv",
 							"enablePartitionDiscovery": false
 						},
 						"formatSettings": {
