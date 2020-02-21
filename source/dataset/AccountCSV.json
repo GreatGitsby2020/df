@@ -1,0 +1,36 @@
+{
+	"name": "AccountCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageDf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "Account",
+				"folderPath": "Account"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "CompanyName",
+				"type": "String"
+			},
+			{
+				"name": " CompanyId",
+				"type": "String"
+			},
+			{
+				"name": " BusinessPhone",
+				"type": "String"
+			}
+		]
+	}
+}
