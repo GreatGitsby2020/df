@@ -111,6 +111,61 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Copy Contact CSV to Salesforce",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "Copy Account CSV to Salesforce",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "DelimitedTextSource",
+						"storeSettings": {
+							"type": "AzureBlobStorageReadSettings",
+							"recursive": false,
+							"wildcardFolderPath": "Contact",
+							"wildcardFileName": "Contact*.csv",
+							"enablePartitionDiscovery": false
+						},
+						"formatSettings": {
+							"type": "DelimitedTextReadSettings"
+						}
+					},
+					"sink": {
+						"type": "SalesforceSink",
+						"writeBatchSize": 5000,
+						"writeBehavior": "upsert",
+						"externalIdFieldName": "SapContactId__c",
+						"ignoreNullValues": false
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "ContactCSV",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "SalesforceContact",
+						"type": "DatasetReference"
+					}
+				]
 			}
 		],
 		"annotations": []
