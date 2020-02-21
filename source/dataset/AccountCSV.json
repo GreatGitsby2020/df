@@ -10,7 +10,8 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"folderPath": "Account"
+				"folderPath": "Account",
+				"container": "dfinput"
 			},
 			"columnDelimiter": ",",
 			"escapeChar": "\\",
