@@ -152,7 +152,57 @@
 						"externalIdFieldName": "SapContactId__c",
 						"ignoreNullValues": false
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ContactId"
+								},
+								"sink": {
+									"name": "SapContactId__c",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": " FirstName"
+								},
+								"sink": {
+									"name": "FirstName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": " LastName"
+								},
+								"sink": {
+									"name": "LastName",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": " MobilePhone"
+								},
+								"sink": {
+									"name": "Phone",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": " CompanyId"
+								},
+								"sink": {
+									"name": "AccountId",
+									"type": "String"
+								}
+							}
+						]
+					}
 				},
 				"inputs": [
 					{
