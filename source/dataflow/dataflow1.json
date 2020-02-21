@@ -1,0 +1,28 @@
+{
+	"name": "dataflow1",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "Input1",
+						"type": "DatasetReference"
+					},
+					"name": "InputBlob"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AccountCSV",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
+			"transformations": [],
+			"script": "source(output(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\twildcardPaths:['input*.txt']) ~> InputBlob\nInputBlob sink(input(\n\t\tCompanyName as string,\n\t\t{ CompanyId} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tmapColumn(\n\t\tCompanyName = { CompanyName},\n\t\t{ CompanyId},\n\t\t{ BusinessPhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
+		}
+	}
+}
