@@ -1,0 +1,44 @@
+{
+	"name": "ContactCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageDf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Contact",
+				"container": "dfinput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "ContactId",
+				"type": "String"
+			},
+			{
+				"name": " FirstName",
+				"type": "String"
+			},
+			{
+				"name": " LastName",
+				"type": "String"
+			},
+			{
+				"name": " CompanyId",
+				"type": "String"
+			},
+			{
+				"name": " MobilePhone",
+				"type": "String"
+			}
+		]
+	}
+}

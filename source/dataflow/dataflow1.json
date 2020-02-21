@@ -19,10 +19,17 @@
 						"type": "DatasetReference"
 					},
 					"name": "AccountCSV"
+				},
+				{
+					"dataset": {
+						"referenceName": "ContactCSV",
+						"type": "DatasetReference"
+					},
+					"name": "ContactCSV"
 				}
 			],
 			"transformations": [],
-			"script": "source(output(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\twildcardPaths:['input*.txt']) ~> InputBlob\nInputBlob sink(input(\n\t\tCompanyName as string,\n\t\t{ CompanyId} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'account[n].csv',\n\tmapColumn(\n\t\tCompanyName = { CompanyName},\n\t\t{ CompanyId},\n\t\t{ BusinessPhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> AccountCSV"
+			"script": "source(output(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\twildcardPaths:['input*.txt']) ~> InputBlob\nInputBlob sink(input(\n\t\tCompanyName as string,\n\t\t{ CompanyId} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'account[n].csv',\n\tmapColumn(\n\t\tCompanyName = { CompanyName},\n\t\t{ CompanyId},\n\t\t{ BusinessPhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> AccountCSV\nInputBlob sink(input(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tfilePattern:'Contact[n].csv',\n\tmapColumn(\n\t\tContactId,\n\t\t{ FirstName},\n\t\t{ LastName},\n\t\t{ CompanyId},\n\t\t{ MobilePhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ContactCSV"
 		}
 	}
 }
