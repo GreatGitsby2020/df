@@ -13,8 +13,18 @@
 				}
 			],
 			"sinks": [],
-			"transformations": [],
-			"script": "source(output(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tStreetNumber as string,\n\t\tType as string,\n\t\tRelatedId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> SAPcsv"
+			"transformations": [
+				{
+					"name": "SAPcsvWithStreet"
+				},
+				{
+					"name": "SplitAccountAndContact"
+				},
+				{
+					"name": "SortByAccountThenContact"
+				}
+			],
+			"script": "source(output(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tStreetNumber as string,\n\t\tType as string,\n\t\tRelatedId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> SAPcsv\nSAPcsv derive(FullStreet = Street+\", \"+StreetNumber) ~> SAPcsvWithStreet\nSortByAccountThenContact split(Type==\"Company\",\n\tType==\"Contact\",\n\tdisjoint: false) ~> SplitAccountAndContact@(Account, Contact, Error)\nSAPcsvWithStreet sort(asc(Type, true),\n\tasc(RelatedId, true)) ~> SortByAccountThenContact"
 		}
 	}
 }
