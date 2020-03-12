@@ -53,7 +53,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "Name",
+									"name": "LastName",
 									"type": "String"
 								}
 							},
