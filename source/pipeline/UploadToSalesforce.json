@@ -191,6 +191,12 @@
 												"name": "Description",
 												"type": "String"
 											}
+										},
+										{
+											"sink": {
+												"name": "JobId",
+												"type": "String"
+											}
 										}
 									]
 								}
