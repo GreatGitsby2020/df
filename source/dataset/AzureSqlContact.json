@@ -1,0 +1,41 @@
+{
+	"name": "AzureSqlContact",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAPInputSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "SAPId",
+				"type": "nchar"
+			},
+			{
+				"name": "Name",
+				"type": "nchar"
+			},
+			{
+				"name": "Phone",
+				"type": "nchar"
+			},
+			{
+				"name": "Street",
+				"type": "nchar"
+			},
+			{
+				"name": "AccountId",
+				"type": "nchar"
+			},
+			{
+				"name": "SyncStatus",
+				"type": "nchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "Contact"
+		}
+	}
+}
