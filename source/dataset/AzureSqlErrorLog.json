@@ -1,0 +1,31 @@
+{
+	"name": "AzureSqlErrorLog",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "SAPInputSqlDatabase",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "ObjectId",
+				"type": "nchar"
+			},
+			{
+				"name": "Description",
+				"type": "nchar"
+			},
+			{
+				"name": "Timestamp",
+				"type": "smalldatetime",
+				"precision": 16,
+				"scale": 0
+			}
+		],
+		"typeProperties": {
+			"schema": "dbo",
+			"table": "ErrorLog"
+		}
+	}
+}
