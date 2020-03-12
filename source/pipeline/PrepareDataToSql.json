@@ -1,9 +1,9 @@
 {
-	"name": "pipeline3",
+	"name": "PrepareDataToSql",
 	"properties": {
 		"activities": [
 			{
-				"name": "dataflow2",
+				"name": "AccountContactCsvToSql",
 				"type": "ExecuteDataFlow",
 				"dependsOn": [],
 				"policy": {
