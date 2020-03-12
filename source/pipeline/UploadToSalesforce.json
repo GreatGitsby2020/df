@@ -109,7 +109,7 @@
 				"type": "SetVariable",
 				"dependsOn": [
 					{
-						"activity": "Web1",
+						"activity": "CopyAccountToSF",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -119,29 +119,9 @@
 				"typeProperties": {
 					"variableName": "CopyAccountActivityId",
 					"value": {
-						"value": "@activity('Web1').output",
+						"value": "@activity('CopyAccountToSF').output.redirectRowPath",
 						"type": "Expression"
 					}
-				}
-			},
-			{
-				"name": "Web1",
-				"type": "WebActivity",
-				"dependsOn": [],
-				"policy": {
-					"timeout": "7.00:00:00",
-					"retry": 0,
-					"retryIntervalInSeconds": 30,
-					"secureOutput": false,
-					"secureInput": false
-				},
-				"userProperties": [],
-				"typeProperties": {
-					"url": {
-						"value": "/pipelineruns/@pipeline().RunId",
-						"type": "Expression"
-					},
-					"method": "GET"
 				}
 			}
 		],
