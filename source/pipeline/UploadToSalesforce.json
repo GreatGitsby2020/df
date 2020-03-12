@@ -119,7 +119,7 @@
 				"typeProperties": {
 					"variableName": "CopyAccountActivityId",
 					"value": {
-						"value": "@activity('CopyAccountToSF').output",
+						"value": "@activity('CopyAccountToSF').output.value",
 						"type": "Expression"
 					}
 				}
