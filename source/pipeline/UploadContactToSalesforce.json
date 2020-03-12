@@ -23,7 +23,7 @@
 						"type": "SalesforceSink",
 						"writeBatchSize": 5000,
 						"writeBehavior": "upsert",
-						"externalIdFieldName": "BpID__c",
+						"externalIdFieldName": "SapContactId__c",
 						"ignoreNullValues": false
 					},
 					"enableStaging": false,
