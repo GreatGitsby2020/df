@@ -12,7 +12,15 @@
 					"name": "SAPcsv"
 				}
 			],
-			"sinks": [],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "AzureSqlAccount",
+						"type": "DatasetReference"
+					},
+					"name": "sink1"
+				}
+			],
 			"transformations": [
 				{
 					"name": "SAPcsvWithStreet"
@@ -24,7 +32,7 @@
 					"name": "SortByAccountThenContact"
 				}
 			],
-			"script": "source(output(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tStreetNumber as string,\n\t\tType as string,\n\t\tRelatedId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> SAPcsv\nSAPcsv derive(FullStreet = Street+\", \"+StreetNumber) ~> SAPcsvWithStreet\nSortByAccountThenContact split(Type==\"Company\",\n\tType==\"Contact\",\n\tdisjoint: false) ~> SplitAccountAndContact@(Account, Contact, Error)\nSAPcsvWithStreet sort(asc(Type, true),\n\tasc(RelatedId, true)) ~> SortByAccountThenContact"
+			"script": "source(output(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tStreetNumber as string,\n\t\tType as string,\n\t\tRelatedId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> SAPcsv\nSAPcsv derive(FullStreet = Street+\", \"+StreetNumber) ~> SAPcsvWithStreet\nSortByAccountThenContact split(Type==\"Company\",\n\tType==\"Contact\",\n\tdisjoint: false) ~> SplitAccountAndContact@(Account, Contact, Error)\nSAPcsvWithStreet sort(asc(Type, true),\n\tasc(RelatedId, true)) ~> SortByAccountThenContact\nSplitAccountAndContact@Account sink(input(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tParentAccountId as string,\n\t\tSyncStatus as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> sink1"
 		}
 	}
 }
