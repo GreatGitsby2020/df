@@ -44,8 +44,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "AccountId",
-									"type": "String"
+									"name": "AccountId.BpID__c"
 								}
 							},
 							{
