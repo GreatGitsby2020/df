@@ -119,7 +119,7 @@
 				"typeProperties": {
 					"variableName": "SfAccountRunLogPath",
 					"value": {
-						"value": "@last(split(string(activity('CopyAccountToSF').output.redirectRowPath),'/'))",
+						"value": "@split(string(activity('CopyAccountToSF').output.redirectRowPath),'/')",
 						"type": "Expression"
 					}
 				}
@@ -129,7 +129,7 @@
 				"type": "IfCondition",
 				"dependsOn": [
 					{
-						"activity": "Set variable1",
+						"activity": "Set variable2",
 						"dependencyConditions": [
 							"Succeeded"
 						]
@@ -161,7 +161,7 @@
 										"type": "AzureBlobStorageReadSettings",
 										"recursive": true,
 										"wildcardFolderPath": {
-											"value": "@{variables('SfAccountRunLogPath')}",
+											"value": "@{variables('SfAccountRunLogFolder')}",
 											"type": "Expression"
 										},
 										"wildcardFileName": "*.csv",
@@ -216,10 +216,33 @@
 						}
 					]
 				}
+			},
+			{
+				"name": "Set variable2",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "Set variable1",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"userProperties": [],
+				"typeProperties": {
+					"variableName": "SfAccountRunLogFolder",
+					"value": {
+						"value": "@variables('SfAccountRunLogPath')[sub(length(variables('SfAccountRunLogPath')),2)]\n",
+						"type": "Expression"
+					}
+				}
 			}
 		],
 		"variables": {
 			"SfAccountRunLogPath": {
+				"type": "Array"
+			},
+			"SfAccountRunLogFolder": {
 				"type": "String"
 			}
 		},
