@@ -117,16 +117,16 @@
 				],
 				"userProperties": [],
 				"typeProperties": {
-					"variableName": "CopyAccountActivityId",
+					"variableName": "SfAccountRunLogPath",
 					"value": {
-						"value": "@string(activity('CopyAccountToSF').output)",
+						"value": "@string(activity('CopyAccountToSF').output.redirectRowPath)",
 						"type": "Expression"
 					}
 				}
 			}
 		],
 		"variables": {
-			"CopyAccountActivityId": {
+			"SfAccountRunLogPath": {
 				"type": "String"
 			}
 		},
