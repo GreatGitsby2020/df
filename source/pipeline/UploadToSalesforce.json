@@ -115,6 +115,7 @@
 						]
 					}
 				],
+				"userProperties": [],
 				"typeProperties": {
 					"variableName": "CopyAccountActivityId",
 					"value": {
