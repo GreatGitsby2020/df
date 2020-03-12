@@ -27,6 +27,14 @@
 						"ignoreNullValues": false
 					},
 					"enableStaging": false,
+					"enableSkipIncompatibleRow": true,
+					"redirectIncompatibleRowSettings": {
+						"linkedServiceName": {
+							"referenceName": "AzureBlobStorageDf",
+							"type": "LinkedServiceReference"
+						},
+						"path": "dfinput"
+					},
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
