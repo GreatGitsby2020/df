@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "AzureSqlSource",
-						"sqlReaderQuery": "SELECT * WHERE ParentAccountId IS NOT NULL",
+						"sqlReaderQuery": "SELECT * FROM dbo.Account WHERE ParentAccountId IS NOT NULL",
 						"queryTimeout": "02:00:00"
 					},
 					"sink": {
