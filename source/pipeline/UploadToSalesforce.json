@@ -55,7 +55,7 @@
 									"type": "String"
 								},
 								"sink": {
-									"name": "ParentId__r.BpID__c"
+									"name": "Account.ParentId.BpID__c"
 								}
 							},
 							{
