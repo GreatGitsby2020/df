@@ -34,7 +34,7 @@
 							"referenceName": "AzureBlobStorageDf",
 							"type": "LinkedServiceReference"
 						},
-						"path": "dfinput"
+						"path": "runlog"
 					},
 					"translator": {
 						"type": "TabularTranslator",
@@ -103,8 +103,32 @@
 						"type": "DatasetReference"
 					}
 				]
+			},
+			{
+				"name": "Set variable1",
+				"type": "SetVariable",
+				"dependsOn": [
+					{
+						"activity": "CopyAccountToSF",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"typeProperties": {
+					"variableName": "CopyAccountActivityId",
+					"value": {
+						"value": "@activity('CopyAccountToSF').output",
+						"type": "Expression"
+					}
+				}
 			}
 		],
+		"variables": {
+			"CopyAccountActivityId": {
+				"type": "String"
+			}
+		},
 		"annotations": []
 	}
 }
