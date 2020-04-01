@@ -1,0 +1,45 @@
+{
+	"name": "AccountRunlog",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageDf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "5aa3477e-07af-907a-f64e-45d7656799eb.csv",
+				"folderPath": "636a798e-8f3a-4bdb-9afa-c0b80843454a",
+				"container": "runlog"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			},
+			{
+				"type": "String"
+			}
+		]
+	}
+}
