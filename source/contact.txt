@@ -1,0 +1,3 @@
+ContactId, FirstName, LastName, CompanyId, MobilePhone
+CT123, Eric, Bourlon, AC123, +32473650416
+CT456, John, Doe, AC456, +32485111111

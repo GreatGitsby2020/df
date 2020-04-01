@@ -1,2 +1,7 @@
-Eric, Bourlon
-John, Doe
+ContactId, FirstName, LastName, CompanyName, CompanyId, MobilePhone, BusinessPhone
+CT123, Eric, Bourlon, Engie, AC123, +32473650416, +3225107894
+CT456, John, Doe, Microsoft, AC456, +32485111111, +3221111111
+CT987, Erwan, Smith, Salesforce, AC987, +32468113498, +3223333333
+CT555, John, Good, , AC555, +32468113499, +3223333334
+CT666, Paul, Bouteille, Oracle, AC666, +32468113495, +3223333335
+
