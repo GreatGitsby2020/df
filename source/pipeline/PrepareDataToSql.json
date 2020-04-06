@@ -19,9 +19,9 @@
 						"referenceName": "AccountContactCsvToSql",
 						"type": "DataFlowReference"
 					},
-					"compute": {
-						"coreCount": 8,
-						"computeType": "General"
+					"integrationRuntime": {
+						"referenceName": "msarchdfdev2-ir",
+						"type": "IntegrationRuntimeReference"
 					}
 				}
 			}
