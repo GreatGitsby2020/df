@@ -20,11 +20,7 @@
 						"azureTableSourceIgnoreTableNotFound": false
 					},
 					"sink": {
-						"type": "SalesforceSink",
-						"writeBatchSize": 100,
-						"writeBehavior": "insert",
-						"ignoreNullValues": false,
-						"maxConcurrentConnections": 1
+						"type": "AzureSqlSink"
 					},
 					"enableStaging": false,
 					"translator": {
@@ -61,7 +57,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "SalesforceObject1",
+						"referenceName": "AzureSqlAccount",
 						"type": "DatasetReference"
 					}
 				]
