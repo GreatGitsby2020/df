@@ -11,6 +11,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
 		},
+		"AzureBlobStorageDf_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageDf'"
+		},
+		"SAPInputSqlDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SAPInputSqlDatabase'"
+		},
 		"SalesforceEbourlon_password": {
 			"type": "secureString",
 			"metadata": "Secure string for 'password' of 'SalesforceEbourlon'"
@@ -85,6 +93,44 @@
 			]
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageDf')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureBlobStorageDf_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "msarchdfdev2-ir",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/msarchdfdev2-ir')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SAPInputSqlDatabase')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDatabase",
+				"typeProperties": {
+					"connectionString": "[parameters('SAPInputSqlDatabase_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "msarchdfdev2-ir",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/msarchdfdev2-ir')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/SalesforceEbourlon')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
 			"apiVersion": "2018-06-01",
@@ -113,7 +159,381 @@
 			]
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/SalesforceObject1')]",
+			"name": "[concat(parameters('factoryName'), '/AccountCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageDf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Account",
+						"container": "dfinput"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "CompanyName",
+						"type": "String"
+					},
+					{
+						"name": " CompanyId",
+						"type": "String"
+					},
+					{
+						"name": " BusinessPhone",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountRunlog')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageDf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "5aa3477e-07af-907a-f64e-45d7656799eb.csv",
+						"folderPath": "636a798e-8f3a-4bdb-9afa-c0b80843454a",
+						"container": "runlog"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlAccount')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPInputSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SAPId",
+						"type": "nchar"
+					},
+					{
+						"name": "Name",
+						"type": "nchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nchar"
+					},
+					{
+						"name": "Street",
+						"type": "nchar"
+					},
+					{
+						"name": "ParentAccountId",
+						"type": "nchar"
+					},
+					{
+						"name": "SyncStatus",
+						"type": "nchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Account"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlContact')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPInputSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "SAPId",
+						"type": "nchar"
+					},
+					{
+						"name": "Name",
+						"type": "nchar"
+					},
+					{
+						"name": "Phone",
+						"type": "nchar"
+					},
+					{
+						"name": "Street",
+						"type": "nchar"
+					},
+					{
+						"name": "AccountId",
+						"type": "nchar"
+					},
+					{
+						"name": "SyncStatus",
+						"type": "nchar"
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Contact"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSqlErrorLog')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SAPInputSqlDatabase",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "ObjectId",
+						"type": "nchar"
+					},
+					{
+						"name": "Description",
+						"type": "nchar"
+					},
+					{
+						"name": "Timestamp",
+						"type": "smalldatetime",
+						"precision": 16,
+						"scale": 0
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "ErrorLog"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/ContactCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageDf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"folderPath": "Contact",
+						"container": "dfinput"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ContactId",
+						"type": "String"
+					},
+					{
+						"name": " FirstName",
+						"type": "String"
+					},
+					{
+						"name": " LastName",
+						"type": "String"
+					},
+					{
+						"name": " CompanyId",
+						"type": "String"
+					},
+					{
+						"name": " MobilePhone",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageDf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "InputAccountContact.csv",
+						"container": "dfinput"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					},
+					{
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Input1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureBlobStorageDf",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "input1.txt",
+						"container": "dfinput"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": [
+					{
+						"name": "ContactId",
+						"type": "String"
+					},
+					{
+						"name": " FirstName",
+						"type": "String"
+					},
+					{
+						"name": " LastName",
+						"type": "String"
+					},
+					{
+						"name": " CompanyName",
+						"type": "String"
+					},
+					{
+						"name": " CompanyId",
+						"type": "String"
+					},
+					{
+						"name": " MobilePhone",
+						"type": "String"
+					},
+					{
+						"name": " BusinessPhone",
+						"type": "String"
+					}
+				]
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SalesforceAccount')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
 			"properties": {
@@ -130,6 +550,408 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/SalesforceEbourlon')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/SalesforceContact')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "SalesforceEbourlon",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "SalesforceObject",
+				"schema": [],
+				"typeProperties": {
+					"objectApiName": "Contact"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/SalesforceEbourlon')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UploadContactToSalesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyContactToSalesforce",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "upsert",
+								"externalIdFieldName": "SapContactId__c",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"redirectIncompatibleRowSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorageDf",
+									"type": "LinkedServiceReference"
+								},
+								"path": "dfinput"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "AccountId",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Account.BpID__c"
+										}
+									},
+									{
+										"source": {
+											"name": "Name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "LastName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Street",
+											"type": "String"
+										},
+										"sink": {
+											"name": "MailingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SAPId",
+											"type": "String"
+										},
+										"sink": {
+											"name": "SapContactId__c",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlContact",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SalesforceContact",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlContact')]",
+				"[concat(variables('factoryId'), '/datasets/SalesforceContact')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/UploadToSalesforce')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "CopyAccountToSF",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "AzureSqlSource",
+								"sqlReaderQuery": "SELECT * FROM dbo.Account WHERE ParentAccountId IS NOT NULL",
+								"queryTimeout": "02:00:00"
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "upsert",
+								"externalIdFieldName": "BpID__c",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"enableSkipIncompatibleRow": true,
+							"redirectIncompatibleRowSettings": {
+								"linkedServiceName": {
+									"referenceName": "AzureBlobStorageDf",
+									"type": "LinkedServiceReference"
+								},
+								"path": "runlog"
+							},
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "Name",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "ParentAccountId",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Parent.BpID__c"
+										}
+									},
+									{
+										"source": {
+											"name": "Street",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BillingStreet",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "Phone",
+											"type": "String"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": "SAPId",
+											"type": "String"
+										},
+										"sink": {
+											"name": "BpID__c",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AzureSqlAccount",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SalesforceAccount",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Set variable1",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "CopyAccountToSF",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "SfAccountRunLogPath",
+							"value": {
+								"value": "@split(string(activity('CopyAccountToSF').output.redirectRowPath),'/')",
+								"type": "Expression"
+							}
+						}
+					},
+					{
+						"name": "If Error in Account Upload",
+						"type": "IfCondition",
+						"dependsOn": [
+							{
+								"activity": "Set variable2",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"expression": {
+								"value": "@equals(variables('SfAccountRunLogPath'),'')",
+								"type": "Expression"
+							},
+							"ifFalseActivities": [
+								{
+									"name": "Copy Account Error to Sql",
+									"type": "Copy",
+									"dependsOn": [],
+									"policy": {
+										"timeout": "7.00:00:00",
+										"retry": 0,
+										"retryIntervalInSeconds": 30,
+										"secureOutput": false,
+										"secureInput": false
+									},
+									"userProperties": [],
+									"typeProperties": {
+										"source": {
+											"type": "DelimitedTextSource",
+											"storeSettings": {
+												"type": "AzureBlobStorageReadSettings",
+												"recursive": true,
+												"wildcardFolderPath": {
+													"value": "@{variables('SfAccountRunLogFolder')}",
+													"type": "Expression"
+												},
+												"wildcardFileName": "*.csv",
+												"enablePartitionDiscovery": false
+											},
+											"formatSettings": {
+												"type": "DelimitedTextReadSettings"
+											}
+										},
+										"sink": {
+											"type": "AzureSqlSink"
+										},
+										"enableStaging": false,
+										"translator": {
+											"type": "TabularTranslator",
+											"mappings": [
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 5
+													},
+													"sink": {
+														"name": "ObjectId",
+														"type": "String"
+													}
+												},
+												{
+													"source": {
+														"type": "String",
+														"ordinal": 7
+													},
+													"sink": {
+														"name": "Description",
+														"type": "String"
+													}
+												}
+											]
+										}
+									},
+									"inputs": [
+										{
+											"referenceName": "AccountRunlog",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									],
+									"outputs": [
+										{
+											"referenceName": "AzureSqlErrorLog",
+											"type": "DatasetReference",
+											"parameters": {}
+										}
+									]
+								}
+							]
+						}
+					},
+					{
+						"name": "Set variable2",
+						"type": "SetVariable",
+						"dependsOn": [
+							{
+								"activity": "Set variable1",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"variableName": "SfAccountRunLogFolder",
+							"value": {
+								"value": "@variables('SfAccountRunLogPath')[sub(length(variables('SfAccountRunLogPath')),2)]\n",
+								"type": "Expression"
+							}
+						}
+					}
+				],
+				"variables": {
+					"SfAccountRunLogPath": {
+						"type": "Array"
+					},
+					"SfAccountRunLogFolder": {
+						"type": "String"
+					}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/AzureSqlAccount')]",
+				"[concat(variables('factoryId'), '/datasets/SalesforceAccount')]",
+				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]",
+				"[concat(variables('factoryId'), '/datasets/AccountRunlog')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlErrorLog')]"
 			]
 		},
 		{
@@ -156,11 +978,7 @@
 								"azureTableSourceIgnoreTableNotFound": false
 							},
 							"sink": {
-								"type": "SalesforceSink",
-								"writeBatchSize": 100,
-								"writeBehavior": "insert",
-								"ignoreNullValues": false,
-								"maxConcurrentConnections": 1
+								"type": "AzureSqlSink"
 							},
 							"enableStaging": false,
 							"translator": {
@@ -198,7 +1016,7 @@
 						],
 						"outputs": [
 							{
-								"referenceName": "SalesforceObject1",
+								"referenceName": "AzureSqlAccount",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -209,7 +1027,76 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AccountContact')]",
-				"[concat(variables('factoryId'), '/datasets/SalesforceObject1')]"
+				"[concat(variables('factoryId'), '/datasets/AzureSqlAccount')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AccountContactCsvToSql')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "DelimitedText1",
+								"type": "DatasetReference"
+							},
+							"name": "SAPcsv"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AzureSqlAccount",
+								"type": "DatasetReference"
+							},
+							"name": "CopyAccountToSqlTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlContact",
+								"type": "DatasetReference"
+							},
+							"name": "CopyContactToSqlTable"
+						},
+						{
+							"dataset": {
+								"referenceName": "AzureSqlErrorLog",
+								"type": "DatasetReference"
+							},
+							"name": "ReportErrorToSqlTable"
+						}
+					],
+					"transformations": [
+						{
+							"name": "SAPcsvWithStreet"
+						},
+						{
+							"name": "SplitAccountAndContact"
+						},
+						{
+							"name": "SortByAccountThenContact"
+						},
+						{
+							"name": "TypeError"
+						},
+						{
+							"name": "AlterRow1"
+						},
+						{
+							"name": "AlterRow2"
+						}
+					],
+					"script": "source(output(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tStreetNumber as string,\n\t\tType as string,\n\t\tRelatedId as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false) ~> SAPcsv\nSAPcsv derive(FullStreet = Street+\", \"+StreetNumber,\n\t\tSyncStatus = \"UpdatedFromSAP\") ~> SAPcsvWithStreet\nSortByAccountThenContact split(Type==\"Company\",\n\tType==\"Contact\",\n\tdisjoint: false) ~> SplitAccountAndContact@(Account, Contact, Error)\nSAPcsvWithStreet sort(asc(Type, true),\n\tasc(RelatedId, true)) ~> SortByAccountThenContact\nSplitAccountAndContact@Error derive(ErrorDescription = \"Type Unknown: \"+Type) ~> TypeError\nSplitAccountAndContact@Account alterRow(upsertIf(true())) ~> AlterRow1\nSplitAccountAndContact@Contact alterRow(upsertIf(true())) ~> AlterRow2\nAlterRow1 sink(input(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tParentAccountId as string,\n\t\tSyncStatus as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['SAPId'],\n\tformat: 'table',\n\tmapColumn(\n\t\tSAPId,\n\t\tName,\n\t\tPhone,\n\t\tStreet = FullStreet,\n\t\tParentAccountId = RelatedId,\n\t\tSyncStatus\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CopyAccountToSqlTable\nAlterRow2 sink(input(\n\t\tSAPId as string,\n\t\tName as string,\n\t\tPhone as string,\n\t\tStreet as string,\n\t\tAccountId as string,\n\t\tSyncStatus as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['SAPId'],\n\tformat: 'table',\n\tmapColumn(\n\t\tSAPId,\n\t\tName,\n\t\tPhone,\n\t\tStreet = FullStreet,\n\t\tAccountId = RelatedId,\n\t\tSyncStatus\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> CopyContactToSqlTable\nTypeError sink(input(\n\t\tObjectId as string,\n\t\tDescription as string,\n\t\tTimestamp as timestamp\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table',\n\tmapColumn(\n\t\tObjectId = SAPId,\n\t\tDescription = ErrorDescription\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ReportErrorToSqlTable"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/DelimitedText1')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlAccount')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlContact')]",
+				"[concat(variables('factoryId'), '/datasets/AzureSqlErrorLog')]"
 			]
 		}
 	]

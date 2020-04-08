@@ -5,7 +5,13 @@
 		"factoryName": {
 			"value": "msarchdfdev"
 		},
+		"AzureBlobStorageDf_connectionString": {
+			"value": ""
+		},
 		"AzureTableStorage1_connectionString": {
+			"value": ""
+		},
+		"SAPInputSqlDatabase_connectionString": {
 			"value": ""
 		},
 		"SalesforceEbourlon_password": {

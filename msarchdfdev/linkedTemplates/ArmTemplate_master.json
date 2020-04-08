@@ -7,9 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "msarchdfdev"
 		},
+		"AzureBlobStorageDf_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageDf'"
+		},
 		"AzureTableStorage1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
+		},
+		"SAPInputSqlDatabase_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'SAPInputSqlDatabase'"
 		},
 		"SalesforceEbourlon_password": {
 			"type": "secureString",
@@ -57,6 +65,12 @@
 					"AzureTableStorage1_connectionString": {
 						"value": "[parameters('AzureTableStorage1_connectionString')]"
 					},
+					"AzureBlobStorageDf_connectionString": {
+						"value": "[parameters('AzureBlobStorageDf_connectionString')]"
+					},
+					"SAPInputSqlDatabase_connectionString": {
+						"value": "[parameters('SAPInputSqlDatabase_connectionString')]"
+					},
 					"SalesforceEbourlon_password": {
 						"value": "[parameters('SalesforceEbourlon_password')]"
 					},
@@ -72,6 +86,26 @@
 				}
 			},
 			"dependsOn": []
+		},
+		{
+			"name": "ArmTemplate_1",
+			"type": "Microsoft.Resources/deployments",
+			"apiVersion": "2018-02-01",
+			"properties": {
+				"mode": "incremental",
+				"templateLink": {
+					"uri": "[concat(parameters('containerUri'), '/ArmTemplate_1.json', parameters('containerSasToken'))]",
+					"contentVersion": "1.0.0.0"
+				},
+				"parameters": {
+					"factoryName": {
+						"value": "[parameters('factoryName')]"
+					}
+				}
+			},
+			"dependsOn": [
+				"[resourceId('Microsoft.Resources/deployments', 'ArmTemplate_0')]"
+			]
 		}
 	]
 }

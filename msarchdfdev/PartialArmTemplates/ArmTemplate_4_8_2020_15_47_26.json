@@ -6,34 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "msarchdfdev"
-		},
-		"AzureBlobStorageDf_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorageDf'"
-		},
-		"AzureTableStorage1_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'AzureTableStorage1'"
-		},
-		"SAPInputSqlDatabase_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'SAPInputSqlDatabase'"
-		},
-		"SalesforceEbourlon_password": {
-			"type": "secureString",
-			"metadata": "Secure string for 'password' of 'SalesforceEbourlon'"
-		},
-		"SalesforceEbourlon_securityToken": {
-			"type": "secureString",
-			"metadata": "Secure string for 'securityToken' of 'SalesforceEbourlon'"
-		},
-		"SalesforceEbourlon_properties_typeProperties_environmentUrl": {
-			"type": "string",
-			"defaultValue": "https://login.salesforce.com"
-		},
-		"SalesforceEbourlon_properties_typeProperties_username": {
-			"type": "string",
-			"defaultValue": "postman@test.engie.com"
 		}
 	},
 	"variables": {
@@ -61,16 +33,8 @@
 						"typeProperties": {
 							"dataflow": {
 								"referenceName": "AccountContactCsvToSql",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"SAPcsv": {},
-									"CopyAccountToSqlTable": {},
-									"CopyContactToSqlTable": {},
-									"ReportErrorToSqlTable": {}
-								}
+								"type": "DataFlowReference"
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -181,15 +145,13 @@
 						"inputs": [
 							{
 								"referenceName": "AzureSqlContact",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SalesforceContact",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -198,8 +160,7 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlContact')]",
-				"[concat(variables('factoryId'), '/datasets/SalesforceContact')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
+				"[concat(variables('factoryId'), '/datasets/SalesforceContact')]"
 			]
 		},
 		{
@@ -300,15 +261,13 @@
 						"inputs": [
 							{
 								"referenceName": "AzureSqlAccount",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SalesforceAccount",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -412,15 +371,13 @@
 									"inputs": [
 										{
 											"referenceName": "AccountRunlog",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									],
 									"outputs": [
 										{
 											"referenceName": "AzureSqlErrorLog",
-											"type": "DatasetReference",
-											"parameters": {}
+											"type": "DatasetReference"
 										}
 									]
 								}
@@ -461,7 +418,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/AzureSqlAccount')]",
 				"[concat(variables('factoryId'), '/datasets/SalesforceAccount')]",
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]",
 				"[concat(variables('factoryId'), '/datasets/AccountRunlog')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlErrorLog')]"
 			]
@@ -522,15 +478,13 @@
 						"inputs": [
 							{
 								"referenceName": "AccountContact",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "AzureSqlAccount",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -538,7 +492,6 @@
 				"annotations": []
 			},
 			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/AccountContact')]",
 				"[concat(variables('factoryId'), '/datasets/AzureSqlAccount')]"
 			]
 		},
@@ -563,15 +516,8 @@
 						"typeProperties": {
 							"dataflow": {
 								"referenceName": "dataflow1",
-								"type": "DataFlowReference",
-								"parameters": {},
-								"datasetParameters": {
-									"InputBlob": {},
-									"AccountCSV": {},
-									"ContactCSV": {}
-								}
+								"type": "DataFlowReference"
 							},
-							"staging": {},
 							"compute": {
 								"coreCount": 8,
 								"computeType": "General"
@@ -655,15 +601,13 @@
 						"inputs": [
 							{
 								"referenceName": "AccountCSV",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SalesforceAccount",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -762,15 +706,13 @@
 						"inputs": [
 							{
 								"referenceName": "ContactCSV",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "SalesforceContact",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					}
@@ -822,29 +764,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AccountContact')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "AzureTableStorage1",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "AccountContact"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureTableStorage1')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AccountRunlog')]",
@@ -892,9 +812,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlAccount')]",
@@ -938,9 +856,7 @@
 					"table": "Account"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlContact')]",
@@ -984,9 +900,7 @@
 					"table": "Contact"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/AzureSqlErrorLog')]",
@@ -1020,9 +934,7 @@
 					"table": "ErrorLog"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SAPInputSqlDatabase')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/ContactCSV')]",
@@ -1069,9 +981,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/DelimitedText1')]",
@@ -1118,9 +1028,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/Input1')]",
@@ -1175,9 +1083,7 @@
 					}
 				]
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorageDf')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SalesforceAccount')]",
@@ -1195,9 +1101,7 @@
 					"objectApiName": "Account"
 				}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SalesforceEbourlon')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/SalesforceContact')]",
@@ -1213,106 +1117,6 @@
 				"schema": [],
 				"typeProperties": {
 					"objectApiName": "Contact"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/SalesforceEbourlon')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureBlobStorageDf')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureBlobStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureBlobStorageDf_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "msarchdfdev2-ir",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/msarchdfdev2-ir')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/AzureTableStorage1')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureTableStorage",
-				"typeProperties": {
-					"connectionString": "[parameters('AzureTableStorage1_connectionString')]"
-				}
-			},
-			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SAPInputSqlDatabase')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('SAPInputSqlDatabase_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "msarchdfdev2-ir",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/msarchdfdev2-ir')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/SalesforceEbourlon')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "Salesforce",
-				"typeProperties": {
-					"environmentUrl": "[parameters('SalesforceEbourlon_properties_typeProperties_environmentUrl')]",
-					"username": "[parameters('SalesforceEbourlon_properties_typeProperties_username')]",
-					"password": {
-						"type": "SecureString",
-						"value": "[parameters('SalesforceEbourlon_password')]"
-					},
-					"securityToken": {
-						"type": "SecureString",
-						"value": "[parameters('SalesforceEbourlon_securityToken')]"
-					}
-				},
-				"connectVia": {
-					"referenceName": "msarchdfdev2-ir",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/msarchdfdev2-ir')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/msarchdfdev2-ir')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "Managed",
-				"typeProperties": {
-					"computeProperties": {
-						"location": "North Europe",
-						"dataFlowProperties": {
-							"computeType": "General",
-							"coreCount": 8,
-							"timeToLive": 0
-						}
-					}
 				}
 			},
 			"dependsOn": []

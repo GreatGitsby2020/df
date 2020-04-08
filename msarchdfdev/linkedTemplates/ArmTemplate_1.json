@@ -1,0 +1,335 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "msarchdfdev"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/dataflow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "MappingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"dataset": {
+								"referenceName": "Input1",
+								"type": "DatasetReference"
+							},
+							"name": "InputBlob"
+						}
+					],
+					"sinks": [
+						{
+							"dataset": {
+								"referenceName": "AccountCSV",
+								"type": "DatasetReference"
+							},
+							"name": "AccountCSV"
+						},
+						{
+							"dataset": {
+								"referenceName": "ContactCSV",
+								"type": "DatasetReference"
+							},
+							"name": "ContactCSV"
+						}
+					],
+					"transformations": [],
+					"script": "source(output(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\twildcardPaths:['input*.txt']) ~> InputBlob\nInputBlob sink(input(\n\t\tCompanyName as string,\n\t\t{ CompanyId} as string,\n\t\t{ BusinessPhone} as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tfilePattern:'account[n].csv',\n\tmapColumn(\n\t\tCompanyName = { CompanyName},\n\t\t{ CompanyId},\n\t\t{ BusinessPhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> AccountCSV\nInputBlob sink(input(\n\t\tContactId as string,\n\t\t{ FirstName} as string,\n\t\t{ LastName} as string,\n\t\t{ CompanyId} as string,\n\t\t{ MobilePhone} as string\n\t),\n\tallowSchemaDrift: false,\n\tvalidateSchema: false,\n\tfilePattern:'Contact[n].csv',\n\tmapColumn(\n\t\tContactId,\n\t\t{ FirstName},\n\t\t{ LastName},\n\t\t{ CompanyId},\n\t\t{ MobilePhone}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> ContactCSV"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/PrepareDataToSql')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "AccountContactCsvToSql",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "AccountContactCsvToSql",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"SAPcsv": {},
+									"CopyAccountToSqlTable": {},
+									"CopyContactToSqlTable": {},
+									"ReportErrorToSqlTable": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/pipeline2')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Export data to Account CSV",
+						"type": "ExecuteDataFlow",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"dataflow": {
+								"referenceName": "dataflow1",
+								"type": "DataFlowReference",
+								"parameters": {},
+								"datasetParameters": {
+									"InputBlob": {},
+									"AccountCSV": {},
+									"ContactCSV": {}
+								}
+							},
+							"staging": {},
+							"compute": {
+								"coreCount": 8,
+								"computeType": "General"
+							}
+						}
+					},
+					{
+						"name": "Copy Account CSV to Salesforce",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Export data to Account CSV",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"wildcardFolderPath": "Account*",
+									"wildcardFileName": "account*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "upsert",
+								"externalIdFieldName": "BpID__c",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "CompanyName"
+										},
+										"sink": {
+											"name": "Name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " CompanyId"
+										},
+										"sink": {
+											"name": "BpID__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " BusinessPhone"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "AccountCSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SalesforceAccount",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					},
+					{
+						"name": "Copy Contact CSV to Salesforce",
+						"type": "Copy",
+						"dependsOn": [
+							{
+								"activity": "Copy Account CSV to Salesforce",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "DelimitedTextSource",
+								"storeSettings": {
+									"type": "AzureBlobStorageReadSettings",
+									"recursive": false,
+									"wildcardFolderPath": "Contact",
+									"wildcardFileName": "Contact*.csv",
+									"enablePartitionDiscovery": false
+								},
+								"formatSettings": {
+									"type": "DelimitedTextReadSettings"
+								}
+							},
+							"sink": {
+								"type": "SalesforceSink",
+								"writeBatchSize": 5000,
+								"writeBehavior": "upsert",
+								"externalIdFieldName": "SapContactId__c",
+								"ignoreNullValues": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "ContactId"
+										},
+										"sink": {
+											"name": "SapContactId__c",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " FirstName"
+										},
+										"sink": {
+											"name": "FirstName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " LastName"
+										},
+										"sink": {
+											"name": "LastName",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " MobilePhone"
+										},
+										"sink": {
+											"name": "Phone",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"name": " CompanyId"
+										},
+										"sink": {
+											"name": "AccountId",
+											"type": "String"
+										}
+									}
+								]
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "ContactCSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "SalesforceContact",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/dataflows/dataflow1')]"
+			]
+		}
+	]
+}
