@@ -1,0 +1,36 @@
+{
+	"name": "AccountManual",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureBlobStorageDf",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"folderPath": "Account",
+				"container": "dfinput"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": [
+			{
+				"name": "CompanyNameMAnual",
+				"type": "String"
+			},
+			{
+				"name": " CompanyIdManual",
+				"type": "String"
+			},
+			{
+				"name": " BusinessPhoneManual",
+				"type": "String"
+			}
+		]
+	}
+}
